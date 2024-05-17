@@ -1,0 +1,6 @@
+db.sqlite3
+img_productos/
+.vscode
+.idea
+__pycache__
+migrations/
