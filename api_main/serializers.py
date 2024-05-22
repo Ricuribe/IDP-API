@@ -1,5 +1,25 @@
 from rest_framework import serializers
 from .models import Producto, Categoria, Tipo, Pago, Detalle, Metodo, Envio, Region, Comuna, Carrito, Carrito_detalle
+from django.contrib.auth.models import User
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'first_name', 'last_name']
+
+class RegisterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password']
+        extra_kwargs = {'password': {'write_only': True}}
+
+    def create(self, validated_data):
+        user = User.objects.create_user(
+            username=validated_data['username'],
+            email=validated_data['email'],
+            password=validated_data['password']
+        )
+        return user
 
 class ProductoSerializer(serializers.ModelSerializer):
     imagen_url = serializers.SerializerMethodField()
@@ -27,6 +47,7 @@ class PagoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Pago
         fields = '__all__'
+        read_only_fields = ['usuario']
 
 class DetalleSerializer(serializers.ModelSerializer):
     class Meta:
@@ -42,6 +63,7 @@ class EnvioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Envio
         fields = '__all__'
+        read_only_fields = ['usuario']
 
 class RegionSerializer(serializers.ModelSerializer):
     class Meta:
@@ -57,6 +79,7 @@ class CarritoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Carrito
         fields = '__all__'
+        read_only_fields = ['usuario']
 
 class CarritoDetalleSerializer(serializers.ModelSerializer):
     class Meta:
