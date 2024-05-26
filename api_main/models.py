@@ -15,6 +15,7 @@ class Producto(models.Model):
     imagen = models.ImageField(upload_to='img_productos/', blank=True, null=True)
     
     def save(self, *args, **kwargs):
+        
         if self.imagen:
             ext = self.imagen.name.split('.')[-1]
             filename = f'{uuid.uuid4()}.{ext}'
@@ -58,6 +59,16 @@ class Detalle(models.Model):
     def __str__(self):
         return f"{self.pago} - {self.producto}"
 
+class Pedido(models.Model):
+    id_pedido = models.AutoField(primary_key=True)
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    pago = models.ForeignKey('Pago', on_delete=models.CASCADE)
+    fecha = models.DateTimeField(auto_now_add=True)
+    estado = models.IntegerField(max_length=1, default=0)
+    
+    def __str__(self):
+        return f"{self.id_pedido} - {self.usuario}"
+
 class Metodo(models.Model):
     id_metodo = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=20)
@@ -72,7 +83,7 @@ class Envio(models.Model):
     pago = models.ForeignKey('Pago', on_delete=models.CASCADE)
     direccion = models.CharField(max_length=50)
     comuna = models.ForeignKey('Comuna', on_delete=models.CASCADE)
-    estado = models.BooleanField()
+    estado = models.IntegerField(max_length=1, default=0)
 
     def __str__(self):
         return f"{self.id_envio} - {self.usuario}"
@@ -88,12 +99,14 @@ class Comuna(models.Model):
     id_comuna = models.AutoField(primary_key=True)
     region = models.ForeignKey('Region', on_delete=models.CASCADE)
     nombre = models.CharField(max_length=50)
+    
     def __str__(self):
         return f"{self.id_comuna} - {self.nombre}"
 
 class Carrito(models.Model):
     id_carrito = models.AutoField(primary_key=True)
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    
     def __str__(self):
         return f"{self.id_carrito} - {self.usuario}"
 

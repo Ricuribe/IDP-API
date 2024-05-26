@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from .models import Producto, Categoria, Tipo, Pago, Detalle, Metodo, Envio, Region, Comuna, Carrito, Carrito_detalle
-from .serializers import ProductoSerializer, CategoriaSerializer, TipoSerializer, PagoSerializer, DetalleSerializer, MetodoSerializer, EnvioSerializer, RegionSerializer, ComunaSerializer, CarritoSerializer, CarritoDetalleSerializer
+from .models import Producto, Categoria, Tipo, Pago, Detalle, Metodo, Envio, Region, Comuna, Carrito, Carrito_detalle, Pedido
+from .serializers import ProductoSerializer, CategoriaSerializer, TipoSerializer, PagoSerializer, DetalleSerializer, MetodoSerializer, EnvioSerializer, RegionSerializer, ComunaSerializer, CarritoSerializer, CarritoDetalleSerializer, PedidoSerializer
 from .permissions import DynamicModelPermissions
 
 class ProductoViewSet(viewsets.ModelViewSet):
@@ -44,6 +44,11 @@ class MetodoViewSet(viewsets.ModelViewSet):
     queryset = Metodo.objects.all()
     serializer_class = MetodoSerializer
     permission_classes = [DynamicModelPermissions]
+
+class PedidoViewSet(viewsets.ModelViewSet):
+    queryset = Pedido.objects.all()
+    serializer_class = PedidoSerializer
+    permission_classes = [IsAuthenticated]
 
 class EnvioViewSet(viewsets.ModelViewSet):
     queryset = Envio.objects.all()

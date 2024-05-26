@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Producto, Categoria, Tipo, Pago, Detalle, Metodo, Envio, Region, Comuna, Carrito, Carrito_detalle
+from .models import Producto, Categoria, Tipo, Pago, Detalle, Metodo, Envio, Region, Comuna, Carrito, Carrito_detalle, Pedido
 from django.contrib.auth.models import User
 
 class UserSerializer(serializers.ModelSerializer):
@@ -58,6 +58,12 @@ class MetodoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Metodo
         fields = '__all__'
+        
+
+class PedidoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Pedido
+        Fields = '__all__'
 
 class EnvioSerializer(serializers.ModelSerializer):
     class Meta:
