@@ -64,7 +64,7 @@ class Pedido(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     pago = models.ForeignKey('Pago', on_delete=models.CASCADE)
     fecha = models.DateTimeField(auto_now_add=True)
-    estado = models.IntegerField(max_length=1, default=0)
+    estado = models.IntegerField(default=0)
     
     def __str__(self):
         return f"{self.id_pedido} - {self.usuario}"
@@ -83,7 +83,7 @@ class Envio(models.Model):
     pago = models.ForeignKey('Pago', on_delete=models.CASCADE)
     direccion = models.CharField(max_length=50)
     comuna = models.ForeignKey('Comuna', on_delete=models.CASCADE)
-    estado = models.IntegerField(max_length=1, default=0)
+    estado = models.IntegerField(default=0)
 
     def __str__(self):
         return f"{self.id_envio} - {self.usuario}"

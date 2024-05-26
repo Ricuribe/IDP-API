@@ -3,14 +3,16 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import Producto, Categoria, Tipo, Pago, Detalle, Metodo, Envio, Region, Comuna, Carrito, Carrito_detalle, Pedido
 from .serializers import ProductoSerializer, CategoriaSerializer, TipoSerializer, PagoSerializer, DetalleSerializer, MetodoSerializer, EnvioSerializer, RegionSerializer, ComunaSerializer, CarritoSerializer, CarritoDetalleSerializer, PedidoSerializer
 from .permissions import DynamicModelPermissions
+from api_main import permissions
 
 class ProductoViewSet(viewsets.ModelViewSet):
     queryset = Producto.objects.all()
     serializer_class = ProductoSerializer
+
     def get_permissions(self):
         if self.action in ['list', 'retrieve']:
             return [AllowAny()]
-        return [IsAuthenticated(), DynamicModelPermissions()]
+        return [IsAuthenticated(), DynamicModelPermissions()] 
 
 class CategoriaViewSet(viewsets.ModelViewSet):
     queryset = Categoria.objects.all()

@@ -10,15 +10,18 @@ class UserSerializer(serializers.ModelSerializer):
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['username', 'email', 'password']
+        fields = ['username', 'email', 'password', 'first_name', 'last_name']
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
-        user = User.objects.create_user(
+        user = User(
             username=validated_data['username'],
             email=validated_data['email'],
-            password=validated_data['password']
+            first_name=validated_data['first_name'],
+            last_name=validated_data['last_name']
         )
+        user.set_password(validated_data['password'])
+        user.save()
         return user
 
 class ProductoSerializer(serializers.ModelSerializer):
@@ -91,3 +94,24 @@ class CarritoDetalleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Carrito_detalle
         fields = '__all__'
+
+# Api view serializers
+class ProductoDetalleSerializer(serializers.ModelSerializer):
+    nombre = serializers.CharField(source='producto.nombre')
+    cantidad = serializers.IntegerField()
+
+    class Meta:
+        model = Detalle
+        fields = ['producto', 'nombre', 'cantidad']
+
+class PedidoDetalleSerializer(serializers.ModelSerializer):
+    productos = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Pedido
+        fields = ['id_pedido', 'usuario', 'fecha', 'estado', 'productos']
+        read_only_fields = ['id_pedido', 'usuario', 'fecha', 'productos']
+
+    def get_productos(self, obj):
+        detalles = Detalle.objects.filter(id_pago=obj.pago)
+        return ProductoDetalleSerializer(detalles, many=True).data
