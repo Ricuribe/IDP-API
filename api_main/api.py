@@ -13,6 +13,15 @@ class ProductoViewSet(viewsets.ModelViewSet):
         if self.action in ['list', 'retrieve']:
             return [AllowAny()]
         return [IsAuthenticated(), DynamicModelPermissions()] 
+    
+    def get_queryset(self):
+        queryset = Producto.objects.all()
+        categoria = self.request.query_params.get('categoria')
+        
+        if categoria:
+            queryset = queryset.filter(categoria__id_categoria__icontains=categoria)
+        
+        return queryset
 
 class CategoriaViewSet(viewsets.ModelViewSet):
     queryset = Categoria.objects.all()
@@ -55,7 +64,7 @@ class PedidoViewSet(viewsets.ModelViewSet):
 class EnvioViewSet(viewsets.ModelViewSet):
     queryset = Envio.objects.all()
     serializer_class = EnvioSerializer
-    permission_classes = [DynamicModelPermissions]
+    permission_classes = [IsAuthenticated]
     
     def perform_create(self, serializer):
         serializer.save(usuario=self.request.user)
@@ -83,6 +92,15 @@ class CarritoViewSet(viewsets.ModelViewSet):
     
     def perform_create(self, serializer):
         serializer.save(usuario=self.request.user)
+    
+    def get_queryset(self):
+        queryset = Carrito.objects.all()
+        usuario = self.request.query_params.get('usuario')
+        
+        if usuario:
+            queryset = queryset.filter(usuario__id__icontains=usuario)
+        
+        return queryset
 
 class CarritoDetalleViewSet(viewsets.ModelViewSet):
     queryset = Carrito_detalle.objects.all()
