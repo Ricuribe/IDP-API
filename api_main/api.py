@@ -1,4 +1,4 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, filters
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import Producto, Categoria, Tipo, Pago, Detalle, Metodo, Envio, Region, Comuna, Carrito, Carrito_detalle, Pedido
 from .serializers import ProductoSerializer, CategoriaSerializer, TipoSerializer, PagoSerializer, DetalleSerializer, MetodoSerializer, EnvioSerializer, RegionSerializer, ComunaSerializer, CarritoSerializer, CarritoDetalleSerializer, PedidoSerializer
@@ -99,10 +99,19 @@ class CarritoViewSet(viewsets.ModelViewSet):
         
         if usuario:
             queryset = queryset.filter(usuario__id__icontains=usuario)
-        
+            
         return queryset
 
 class CarritoDetalleViewSet(viewsets.ModelViewSet):
     queryset = Carrito_detalle.objects.all()
     serializer_class = CarritoDetalleSerializer
     permission_classes = [IsAuthenticated]
+    
+    def get_queryset(self):
+        queryset = Carrito_detalle.objects.all()
+        carrito = self.request.query_params.get('carrito')
+        
+        if carrito:
+            queryset = queryset.filter(carrito__id_carrito__icontains=carrito)
+            
+        return queryset
