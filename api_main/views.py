@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework import status, permissions
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
-from .models import Producto, Pedido, Detalle
+from .models import Carrito, Carrito_detalle, Producto, Pedido, Detalle
 from .serializers import UserSerializer, RegisterSerializer, ProductoSerializer, PedidoDetalleSerializer
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -108,3 +108,30 @@ class PedidoDetalleView(APIView):
 
         serializer = PedidoDetalleSerializer(pedido)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class AddToCartView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        user = request.user
+        id_producto = request.data.get('id_producto')
+        cantidad = request.data.get('cantidad', 1)
+        print("1 ", request.user, "\n 2", request.data)
+        
+        if not id_producto:
+            return Response({"error": "Product ID is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            producto = Producto.objects.get(id_producto=id_producto)
+        except Producto.DoesNotExist:
+            return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        cart, created = Carrito.objects.get_or_create(usuario=user)
+        
+        cart_item, created = Carrito_detalle.objects.get_or_create(carrito=cart, producto=producto, cantidad=cantidad)
+        if not created:
+            cart_item.cantidad += cantidad
+            cart_item.save()
+            return Response({"message": "Quantity changed"}, status=status.HTTP_200_OK)
+        else:
+            return Response({"message": "Product added to cart"}, status=status.HTTP_200_OK)
