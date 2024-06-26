@@ -1,6 +1,6 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
-from .views import AddToCartView, IndexNewProductosView, LoginView, RegisterView, UserDetailView, LogoutView, PedidoDetalleView
+from .views import AddToCartView, IndexNewProductosView, LoginView, RegisterView, UserDetailView, LogoutView, PedidoDetalleView, CreateTransactionView, PaymentReturnView
 from .api import ProductoViewSet, CategoriaViewSet, TipoViewSet, PagoViewSet, DetalleViewSet, MetodoViewSet, EnvioViewSet, RegionViewSet, ComunaViewSet, CarritoViewSet, CarritoDetalleViewSet, PedidoViewSet
 
 
@@ -27,5 +27,6 @@ urlpatterns = [
     path('productos/nuevos/', IndexNewProductosView.as_view(), name='index_new_productos'),
     path('pedidos/<int:id_pedido>/', PedidoDetalleView.as_view(), name='pedido-detalle'),
     path('add-to-cart/', AddToCartView.as_view(), name='agregar-carro'),
-    
+    path('create_transaction/', CreateTransactionView.as_view(), name='create_transaction'),
+    path('return_transaction/', PaymentReturnView.as_view(), name='return_transaction')
 ]

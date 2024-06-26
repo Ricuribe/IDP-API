@@ -46,7 +46,9 @@ class Pago(models.Model):
     id_pago = models.AutoField(primary_key=True)
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     metodo = models.ForeignKey('Metodo', on_delete=models.CASCADE)
-    fecha = models.DateTimeField()
+    fecha = models.DateTimeField(auto_now=True)
+    token_transaccion = models.CharField(max_length=64, null=True, blank=True)
+    estado_transaccion = models.CharField(max_length=20, null=True, blank=True)
 
     def __str__(self):
         return f"{self.id_pago} - {self.usuario}"
