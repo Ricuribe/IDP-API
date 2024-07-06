@@ -218,7 +218,7 @@ class PaymentReturnView(APIView):
                     item.producto.stock -= item.cantidad
                     item.producto.save()
                 
-                detalles_carrito.delete(carrito = carrito)
+                detalles_carrito.delete()
                 
                 
             else:

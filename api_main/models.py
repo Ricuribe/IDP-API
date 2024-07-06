@@ -16,12 +16,13 @@ class Producto(models.Model):
     
     def save(self, *args, **kwargs):
         
-        if self.imagen:
-            ext = self.imagen.name.split('.')[-1]
-            filename = f'{uuid.uuid4()}.{ext}'
-            while os.path.exists(os.path.join(self.imagen.storage.location, 'img_productos', filename)):
+        if self._state.adding:
+            if self.imagen:
+                ext = self.imagen.name.split('.')[-1]
                 filename = f'{uuid.uuid4()}.{ext}'
-            self.imagen.name = filename
+                while os.path.exists(os.path.join(self.imagen.storage.location, 'img_productos', filename)):
+                    filename = f'{uuid.uuid4()}.{ext}'
+                self.imagen.name = filename
         super(Producto, self).save(*args, **kwargs)
 
     def __str__(self):
