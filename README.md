@@ -2,6 +2,8 @@
 
 * Used Python 3.12
 
+Algún día finalizado como otro proyecto
+
 ### Installation
 
 ```
